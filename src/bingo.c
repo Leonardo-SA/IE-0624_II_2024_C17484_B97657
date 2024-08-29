@@ -3,7 +3,7 @@
 // Laboratorio 1. Introducción a microcontroladores y manejo de GPIOS
 // En este laboratorio se realizará un simulador de bingo con el microcontrolador PIC12F683
 
-#include <pic14/pic12f683.h>  // Archivo de cabecera para el PIC12F683
+#include <pic14/pic12f683.h>  // Usar el microcontrolador PIC12F683
 
 #define _XTAL_FREQ 4000000 // Frecuencia del oscilador
 
