@@ -1,3 +1,3 @@
-#Laboratorio 2 IE0624
-##Juego de Simón Dice
+# Laboratorio 2 IE0624
+## Juego de Simón Dice
 En este laboratorio, se desarrolló un juego de memoria llamado Simón Dice, utilizando el microcontrolador ATtiny4313, LEDs, botones y otros componentes electrónicos. El objetivo principal fue implementar una máquina de estados finitos (FSM) que controlara la lógica del juego, utilizando temporizadores e interrupciones para gestionar las señales de los LEDs y la lectura de los botones. El jugador debe memorizar y reproducir una secuencia de luces que incrementa en dificultad a medida que avanza. La duración de cada luz disminuye conforme la secuencia se alarga, y el juego termina cuando el jugador comete un error al reproducir la secuencia. La FSM facilitó su programación, ya que permitió gestionar las salidas en diferentes momentos del tiempo de manera más estructurada y la sincronización mediante interrupciones temporales garantizó la fluidez en la ejecución del juego y la lectura de los botones
