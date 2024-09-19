@@ -1,63 +1,144 @@
+#include <avr/interrupt.h>
 #include <avr/io.h>
 #include <util/delay.h>
 
-int main(void)
-{
-  // Configurar los pines de los LEDs RGB como salida
-  DDRD |= (1 << PD2);  // Rojo LED1
-  DDRA |= (1 << PA0) | (1 << PA1);  // Verde y Azul LED1
+// Variables globales
+int selected_color = 5;         // Color seleccionado por el usuario
+int current_state;              // Estado actual de la FSM (Máquina de Estados Finitos)
+int color_sequence[4] = {2, 1, 0, 1};  // Secuencia de colores simplificada
+int sequence_position = 0;      // Índice actual en la secuencia
+int milliseconds = 0;           // Cuenta milisegundos
 
-  DDRD |= (1 << PD5) | (1 << PD4) | (1 << PD3);  // LED2 (Rojo, Verde, Azul)
+// Definición de estados para la FSM
+#define WAIT_TIME 0
+#define GAME_SEQUENCE 1
+#define USER_SEQUENCE 2
+#define END 3
 
-  DDRB |= (1 << PB3) | (1 << PB4) | (1 << PB5);  // LED3 (Rojo, Verde, Azul)
+// Funciones para controlar los LEDs
+void TurnOnGreen(void) {
+    PORTB = (1 << PB1);  // Enciende luz verde
+}
 
-  DDRB |= (1 << PB0) | (1 << PB1) | (1 << PB2);  // LED4 (Rojo, Verde, Azul)
+void TurnOnBlue(void) {
+    PORTB = (1 << PB3);  // Enciende luz azul
+}
 
-  // Configurar los pines de los botones como entrada
-  DDRD &= ~(1 << PD1);  // Botón 1
-  DDRD &= ~(1 << PD0);  // Botón 2
-  DDRB &= ~(1 << PB6);  // Botón 3
-  DDRB &= ~(1 << PB7);  // Botón 4
+void TurnOnRed(void) {
+    PORTB = (1 << PB2);  // Enciende luz roja
+}
 
-  // Activar resistencias pull-up internas para los botones
-  PORTD |= (1 << PD1);
-  PORTD |= (1 << PD0);
-  PORTB |= (1 << PB6);
-  PORTB |= (1 << PB7);
+void TurnOffAll(void) {
+    PORTB = 0x00;  // Apaga todas las luces
+}
 
-  // Asegurarse de que todos los LEDs comiencen apagados
-  PORTD &= ~(1 << PD2);  // Apagar Rojo LED1
-  PORTA &= ~(1 << PA0) & ~(1 << PA1);  // Apagar Verde y Azul LED1
-  PORTD &= ~(1 << PD5) & ~(1 << PD4) & ~(1 << PD3);  // Apagar LED2
-  PORTB &= ~(1 << PB3) & ~(1 << PB4) & ~(1 << PB5);  // Apagar LED3
-  PORTB &= ~(1 << PB0) & ~(1 << PB1) & ~(1 << PB2);  // Apagar LED4
+// Configuración de los puertos de luces y temporizador
+void SetupLights(void) {
+    DDRB = 0x0F;  // Configuración del puerto B
+    TCCR0B = 0x5; // Configuración del reloj del temporizador
+}
 
-  // Hacer que cada LED parpadee en su color correspondiente
-  while (1) {
-    // Parpadear LED1 en Rojo
-    PORTD |= (1 << PD2);  // Encender Rojo LED1
-    _delay_ms(2000);
-    PORTD &= ~(1 << PD2); // Apagar Rojo LED1
-    _delay_ms(3000);
+// Inicialización del temporizador
+void SetupTimer(void) {
+    TCCR0A = 0x00;               // Modo de operación normal
+    TCCR0B |= (1 << CS00) | (1 << CS02);  // Prescaler para el temporizador
+    sei();                        // Habilita interrupciones globales
+    TIMSK |= (1 << TOIE0);        // Activa la interrupción por desbordamiento del Timer0
+}
 
-    // Parpadear LED2 en Verde
-    PORTD |= (1 << PD4);  // Encender Verde LED2
-    _delay_ms(2000);
-    PORTD &= ~(1 << PD4); // Apagar Verde LED2
-    _delay_ms(3000);
+// Función de la FSM (Máquina de Estados Finitos)
+void FSMStatusChange(void) {
+    switch (current_state) {
+        case WAIT_TIME:
+            if (selected_color < 5) {
+                current_state = GAME_SEQUENCE;
+                milliseconds = 0;
+                sequence_position = 0;
+                selected_color = 5;  // Desactiva el botón
+            }
+            break;
 
-    // Parpadear LED3 en Azul
-    PORTB |= (1 << PB5);  // Encender Azul LED3
-    _delay_ms(2000);
-    PORTB &= ~(1 << PB5); // Apagar Azul LED3
-    _delay_ms(3000);
+        case GAME_SEQUENCE:
+            // Muestra la secuencia de colores
+            if (color_sequence[sequence_position] == 0) {
+                TurnOnGreen();
+            } else if (color_sequence[sequence_position] == 1) {
+                TurnOnRed();
+            } else if (color_sequence[sequence_position] == 2) {
+                TurnOnBlue();
+            }
 
-    // Parpadear LED4 en Amarillo (Rojo + Verde)
-    PORTB |= (1 << PB0);  // Encender Rojo LED4
-    PORTB |= (1 << PB1);  // Encender Verde LED4
-    _delay_ms(2000);
-    PORTB &= ~(1 << PB0); // Apagar Rojo LED4
-    PORTB &= ~(1 << PB1); // Apagar Verde LED4
-    _delay_ms(3000);
-  }
+            if (milliseconds == 10) {
+                if (sequence_position >= 3) {
+                    current_state = USER_SEQUENCE;
+                    milliseconds = 0;
+                    TurnOffAll();  // Apaga todas las luces
+                    sequence_position = 0;
+                } else {
+                    sequence_position++;
+                    milliseconds = 0;
+                    TurnOffAll();  // Apaga todas las luces
+                }
+            }
+            break;
+
+        case USER_SEQUENCE:
+            // Espera la secuencia del usuario
+            if (selected_color == 5) {
+                current_state = USER_SEQUENCE;
+            } else {
+                if (selected_color == color_sequence[sequence_position]) {
+                    selected_color = 5;
+
+                    if (sequence_position == 3) {
+                        current_state = END;
+                    } else {
+                        sequence_position++;
+                    }
+                } else {
+                    current_state = END;
+                }
+                TurnOffAll();  // Apaga todas las luces
+            }
+            break;
+
+        case END:
+            current_state = WAIT_TIME;
+            selected_color = 5;
+            break;
+
+        default:
+            break;
+    }
+}
+
+int main(void) {
+    SetupLights();  // Configura las luces
+    SetupTimer();   // Configura el temporizador
+    current_state = WAIT_TIME;  // Estado inicial
+
+    while (1) {
+        FSMStatusChange();  // Actualiza el estado de la FSM
+    }
+}
+
+// Interrupciones
+ISR(TIMER0_OVF_vect) {  // Interrupción por desbordamiento del temporizador
+    milliseconds++;
+}
+
+ISR(INT1_vect) {  // Interrupción - Amarillo
+    selected_color = 3;
+}
+
+ISR(PCINT1_vect) {  // Interrupción - Rojo
+    selected_color = 1;
+}
+
+ISR(PCINT2_vect) {  // Interrupción - Verde
+    selected_color = 0;
+}
+
+ISR(INT0_vect) {  // Interrupción - Azul
+    selected_color = 2;
 }
