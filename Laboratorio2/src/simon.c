@@ -6,18 +6,23 @@
 int timer_overflow_count = 0;   // Cuenta las sobrecargas del temporizador
 int selected_color = 5;         // Color seleccionado por el usuario
 int current_state;              // Estado actual de la FSM (Máquina de Estados Finitos)
-int color_sequence[10] = {2, 1, 0, 1, 3, 2, 0, 2, 1, 0};  // Secuencia de colores
+int color_sequence[15] = {2, 1, 0, 1, 3, 2, 0, 2, 1, 0, 3, 2, 1, 0, 1};  // Secuencia de colores
 int sequence_length = 4;        // Longitud de la secuencia de colores
 int sequence_position = 0;      // Índice actual en la secuencia
+int index;
 int display_time = 10;          // Tiempo de visualización de cada color
+int cycle_counter = 0;          // Contador de ciclos
+int temp_variable;              // Variable temporal para intercambio
+int seconds = 0;                // Cuenta segundos
 int milliseconds = 0;           // Cuenta milisegundos
 
 // Definición de estados para la FSM
 #define START 0 
 #define GAME_SEQUENCE 1 
 #define USER_SEQUENCE 2 
-#define END 3 
-#define WAIT_TIME 4
+#define LEVEL 3 
+#define END 4 
+#define WAIT_TIME 5
 
 // Funciones para controlar los LEDs
 void TurnOnGreen(void) {
@@ -38,6 +43,15 @@ void TurnOnYellow(void) {
 
 void TurnOffAll(void) {
     PORTB = 0x00;  // Apaga todas las luces
+}
+
+// Función para generar una nueva secuencia de colores
+void GenerateSequence(void) {
+    for (index = 0; index < sequence_length; index++) {
+        temp_variable = color_sequence[index];
+        color_sequence[index] = color_sequence[cycle_counter % 13];
+        color_sequence[cycle_counter % 13] = temp_variable;
+    }
 }
 
 // Configuración de los puertos de luces y temporizador
@@ -117,6 +131,18 @@ void FSMStatusChange(void) {
                 }
                 TurnOffAll();  // Apaga todas las luces
             }
+            break;
+
+        case LEVEL:
+            // Subir de nivel: incrementa la secuencia
+            current_state = GAME_SEQUENCE;
+            sequence_position = 0;
+            sequence_length++;
+            if (display_time > 1) {
+                display_time--;  // Reduce el tiempo de visualización
+            }
+            selected_color = 5;
+            GenerateSequence();  // Genera nueva secuencia
             break;
 
         case END:
