@@ -3,17 +3,21 @@
 #include <util/delay.h>
 
 // Variables globales
+int timer_overflow_count = 0;   // Cuenta las sobrecargas del temporizador
 int selected_color = 5;         // Color seleccionado por el usuario
 int current_state;              // Estado actual de la FSM (Máquina de Estados Finitos)
-int color_sequence[4] = {2, 1, 0, 1};  // Secuencia de colores simplificada
+int color_sequence[10] = {2, 1, 0, 1, 3, 2, 0, 2, 1, 0};  // Secuencia de colores
+int sequence_length = 4;        // Longitud de la secuencia de colores
 int sequence_position = 0;      // Índice actual en la secuencia
+int display_time = 10;          // Tiempo de visualización de cada color
 int milliseconds = 0;           // Cuenta milisegundos
 
 // Definición de estados para la FSM
-#define WAIT_TIME 0
-#define GAME_SEQUENCE 1
-#define USER_SEQUENCE 2
-#define END 3
+#define START 0 
+#define GAME_SEQUENCE 1 
+#define USER_SEQUENCE 2 
+#define END 3 
+#define WAIT_TIME 4
 
 // Funciones para controlar los LEDs
 void TurnOnGreen(void) {
@@ -26,6 +30,10 @@ void TurnOnBlue(void) {
 
 void TurnOnRed(void) {
     PORTB = (1 << PB2);  // Enciende luz roja
+}
+
+void TurnOnYellow(void) {
+    PORTB = (1 << PB0);  // Enciende luz amarilla
 }
 
 void TurnOffAll(void) {
@@ -51,10 +59,18 @@ void FSMStatusChange(void) {
     switch (current_state) {
         case WAIT_TIME:
             if (selected_color < 5) {
-                current_state = GAME_SEQUENCE;
+                current_state = START;
                 milliseconds = 0;
                 sequence_position = 0;
                 selected_color = 5;  // Desactiva el botón
+            }
+            break;
+
+        case START:
+            if (milliseconds == 5) {
+                current_state = GAME_SEQUENCE;
+                milliseconds = 0;
+                sequence_position = 0;
             }
             break;
 
@@ -66,10 +82,12 @@ void FSMStatusChange(void) {
                 TurnOnRed();
             } else if (color_sequence[sequence_position] == 2) {
                 TurnOnBlue();
+            } else if (color_sequence[sequence_position] == 3) {
+                TurnOnYellow();
             }
 
-            if (milliseconds == 10) {
-                if (sequence_position >= 3) {
+            if (milliseconds == display_time) {
+                if (sequence_position >= sequence_length - 1) {
                     current_state = USER_SEQUENCE;
                     milliseconds = 0;
                     TurnOffAll();  // Apaga todas las luces
@@ -83,14 +101,13 @@ void FSMStatusChange(void) {
             break;
 
         case USER_SEQUENCE:
-            // Espera la secuencia del usuario
             if (selected_color == 5) {
                 current_state = USER_SEQUENCE;
             } else {
                 if (selected_color == color_sequence[sequence_position]) {
                     selected_color = 5;
 
-                    if (sequence_position == 3) {
+                    if (sequence_position == sequence_length - 1) {
                         current_state = END;
                     } else {
                         sequence_position++;
@@ -103,8 +120,11 @@ void FSMStatusChange(void) {
             break;
 
         case END:
-            current_state = WAIT_TIME;
-            selected_color = 5;
+            // Fin del juego
+            if (milliseconds == 6) {
+                current_state = WAIT_TIME;
+                selected_color = 5;
+            }
             break;
 
         default:
