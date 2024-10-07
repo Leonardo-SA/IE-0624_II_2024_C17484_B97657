@@ -1,7 +1,7 @@
 import serial
 
 # Nombre del archivo donde se almacenarán los datos
-fileName = "output.csv"
+fileName = "data_measured.csv"
 
 # Encabezado de las columnas en el archivo CSV
 encabezado = "Volt1; Volt2; Volt3; Volt4\n"
