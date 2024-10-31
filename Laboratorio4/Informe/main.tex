@@ -309,12 +309,12 @@ Seguidamente, se muestra el diagrama de flujo que se desarrolla para el sismógr
 \end{figure}
 
 \subsection{Diseño del circuito con divisor de tensión}
-Para realizar el diseño del circuito es necesario desarrollar un divisor de tensión. Lo cual es fundamental para la correcta alimentación del sistema y la medición del nivel de tensión de la batería. A continuación, se realizó el calculo del divisor de tensión considerando que se tiene una resistencia de  $R_1=1000\Omega$ y otra de $R_2=550\Omega$, de manera que se obtiene lo siguiente:
+Para realizar el diseño del circuito es necesario desarrollar un divisor de tensión. Lo cual es fundamental para la correcta alimentación del sistema y la medición del nivel de tensión de la batería. A continuación, se realizó el calculo del divisor de tensión considerando que se tiene una batería de $7.55V$, una resistencia $R_1=1000\Omega$, una $R_2=220\Omega$ y por último $R_3=330\Omega$, de manera que se obtiene lo siguiente:
 
 \begin{equation*}
 \begin{split}
-    V_{out}= V{in} \cdot \frac{R_1}{R_2+R_1} \\
-    V_{out}=7,55 \cdot \frac{1000\Omega}{550\Omega+1000\Omega} \\
+    V_{out}= V{in} \cdot \frac{R_1}{R_2+R_3+R_1} \\
+    V_{out}=7,55 \cdot \frac{1000\Omega}{220\Omega+330\Omega+1000\Omega} \\
     V_{out}= \frac{151}{31} \approx 4,87 V
 \end{split}
 \end{equation*}
