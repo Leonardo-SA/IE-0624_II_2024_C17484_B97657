@@ -1,1 +1,3 @@
-
+# Laboratorio 4: STM32: GPIO, ADC, comunicaciones, Iot
+## Lorena Solís Extteny B97657 - Leonardo Serrano Arias C17484
+Este laboratorio consiste en el diseño y desarrollo de un sismógrafo digital, implementado con la placa STM32F429 Discovery Kit y la biblioteca libopencm3. El dispositivo está alimentado por una batería y se utiliza para registrar y analizar oscilaciones en el entorno. Entre las funcionalidades incluidas están la lectura de los ejes del giroscopio, el monitoreo del nivel de batería, y la habilitación de comunicación mediante USART/USB. Para facilitar el monitoreo remoto, se implementa una conexión con la plataforma IoT Thingsboard, permitiendo la visualización de las mediciones y el estado del dispositivo a distancia.
