@@ -1,7 +1,9 @@
 Para ejecutar este laboratorio es necesario tener los archivos de código fuente en el directorio stm32f429i-discovery y seguir los siguientes pasos a través de comandos:
 
 > make
+
 > arm-none-eabi-objcopy -O binary main.elf firmware.bin
+
 > st-flash --reset write firmware.bin 0x8000000
 
 
