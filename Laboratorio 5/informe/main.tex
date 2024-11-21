@@ -615,7 +615,7 @@ En primer lugar, para el movimiento updown, mostrado en la figura \ref{fig:14}, 
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.6\linewidth]{Imagenes/live_updown.png}
+    \includegraphics[width=0.8\linewidth]{Imagenes/live_updown.png}
     \caption{Clasificación en tiempo real del movimiento updown}
     \label{fig:14}
 \end{figure}
@@ -624,7 +624,7 @@ Por otra parte, en la prueba del movimiento idle, representado en la figura \ref
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.6\linewidth]{Imagenes/live_idle.png}
+    \includegraphics[width=0.8\linewidth]{Imagenes/live_idle.png}
     \caption{Clasificación en tiempo real del movimiento idle}
     \label{fig:15}
 \end{figure}
@@ -633,7 +633,7 @@ En el caso del movimiento circle, representado en la figura \ref{fig:16}, el mod
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.6\linewidth]{Imagenes/live_circle.png}
+    \includegraphics[width=0.8\linewidth]{Imagenes/live_circle.png}
     \caption{Clasificación en tiempo real del movimiento circle}
     \label{fig:16}
 \end{figure}
@@ -667,7 +667,7 @@ En la Figura \ref{fig:19} se muestran los resultados obtenidos al ejecutar el mo
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.5\linewidth]{Imagenes/results_2.png}
+    \includegraphics[width=0.45\linewidth]{Imagenes/results_2.png}
     \caption{Resultados con Arduino IDE}
     \label{fig:19}
 \end{figure}
@@ -676,9 +676,9 @@ En la Figura \ref{fig:19} se muestran los resultados obtenidos al ejecutar el mo
 \section{Conclusiones y recomendaciones}
 \subsection{Conclusiones}  
 \begin{itemize}
-    \item El modelo alcanzó altos niveles de precisión en la clasificación de los movimientos \textit{circle}, \textit{idle} y \textit{updown}, con exactitudes superiores al 99\% en cada escenario.  
-    \item Los puntajes de anomalía obtenidos indicaron un comportamiento consistente, permitiendo identificar con claridad movimientos anómalos o fuera de los patrones esperados.  
+    \item El modelo alcanzó altos niveles de precisión en la clasificación de los movimientos \textit{circle}, \textit{idle} y \textit{updown}, con exactitudes superiores al 99\% en cada escenario.  El sistema fue capaz de identificar datos que no seguían los patrones esperados mediante un módulo de detección de anomalías. Esto garantiza una mayor confiabilidad en la clasificación al evitar errores en escenarios con datos atípicos.
     \item La implementación del modelo directamente en el hardware demostró ser eficiente, eliminando la necesidad de conexión a internet para la inferencia y destacando la adaptabilidad del sistema en entornos autónomos.  
+    \item El uso de herramientas como Edge Impulse y la plataforma Arduino IDE facilitó tanto el desarrollo como la implementación del modelo. Esto demuestra que los sistemas basados en aprendizaje automático pueden ser desarrollados eficientemente incluso con recursos de hardware limitados, como microcontroladores compactos.
 \end{itemize}
 
 \subsection{Recomendaciones}  
