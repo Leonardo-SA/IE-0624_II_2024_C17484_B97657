@@ -14,6 +14,11 @@
  *
  */
 
+/* Laboratorio 5 IE0624
+Lorena Solís Extteny B97657
+Leonardo Serrano Arias C17484
+/*
+
 /* Includes ---------------------------------------------------------------- */
 #include <Laboratorio_5_inferencing.h>
 #include <Arduino_LSM9DS1.h> //Click here to get the library: https://www.arduino.cc/reference/en/libraries/arduino_lsm9ds1/
