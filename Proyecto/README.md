@@ -38,7 +38,7 @@ Este proyecto implementa un sistema automatizado de parqueo inteligente utilizan
    git clone https://github.com/Leonardo-SA/IE 0624_II_2024_C17484_B97657/tree/9b995f69561d0bf21dc99eecd3e3977756ab1c37/Proyecto
    cd src
 ~~~
-2. **Configurar el ESP32**:
+2. **Configurar la conexión WiFi del ESP32**:
 ~~~
 char ssid[] = "Nombre de la red";
 char pass[] = "Contraseña";
