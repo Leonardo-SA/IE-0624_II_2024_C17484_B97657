@@ -43,7 +43,7 @@ Este proyecto implementa un sistema automatizado de parqueo inteligente utilizan
 char ssid[] = "Nombre de la red";
 char pass[] = "Contraseña";
 ~~~
-Configura el token de autenticación de Blynk:
+3. **Configurar el token de autenticación de Blynk**:
 ~~~
 #define BLYNK_AUTH_TOKEN "TuTokenDeAutenticación"
 ~~~
