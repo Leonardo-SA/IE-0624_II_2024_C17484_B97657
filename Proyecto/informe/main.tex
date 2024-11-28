@@ -102,8 +102,9 @@ El repositorio utilizado para el desarrollo de este proyecto se encuentra en la 
 \subsection{Objetivos Específicos}
 \begin{enumerate}
     \item Implementar un sistema de monitoreo de un parqueo en tiempo real, mediante el uso de un microcontrolador ESP32 y la correcta implementación de un servomotor, así como distintos sensores infrarrojos.
-    \item Diseñar una interfaz de usuario para visualizar el estado del estacionamiento. 
-    \item Integrar la conectividad WIFI para sincronizar el estado del parqueo con la nube. 
+    \item Diseñar una interfaz de usuario para visualizar el estado del estacionamiento y reservar espacios en el mismo.  
+    \item Integrar la conectividad WiFi para sincronizar el estado del parqueo con la nube y contar con un sistema de reservas. 
+    \item Crear una maqueta del parqueo con agujas automáticas de entrada y salida.
 \end{enumerate}
 
 
@@ -272,7 +273,7 @@ Total & \multicolumn{2}{c|}{33217} \\ \hline
 A continuación se muestra el diagrama de flujo del parqueo inteligente que indica el flujo del funcionamiento del mismo:
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.8\linewidth]{Imagenes/flow.png}
+    \includegraphics[width=0.9\linewidth]{Imagenes/flow.png}
     \caption{Diagrama de flujo del parqueo inteligente}
     \label{fig:6}
 \end{figure}
@@ -281,7 +282,7 @@ En la siguiente figura se muestra el diagrama de bloques del parqueo inteligente
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.8\linewidth]{Imagenes/block.png}
+    \includegraphics[width=0.85\linewidth]{Imagenes/block.png}
     \caption{Diagrama de bloques del parqueo inteligente}
     \label{fig:7}
 \end{figure}
@@ -313,6 +314,20 @@ En este proyecto se implementó un sistema de parqueo inteligente utilizando un 
     \end{itemize}
 \end{itemize}
 
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\linewidth]{Imagenes/inicial.jpeg}
+    \caption{Maqueta del sistema de parqueo inteligente}
+    \label{fig:100}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\linewidth]{Imagenes/circuito.jpeg}
+    \caption{Circuito en protoboard del sistema}
+    \label{fig:105}
+\end{figure}
+
 \subsection{Funcionamiento del Sistema}
 El sistema opera de manera coordinada entre hardware y software para gestionar los espacios de parqueo de forma automatizada y remota. A continuación, se detalla su funcionamiento:
 
@@ -324,6 +339,8 @@ El microcontrolador ESP32 se enciende y configura los periféricos:
         \item La pantalla LCD muestra el estado inicial de los espacios.
         \item Se establece la conexión Wi-Fi para comunicarse con la plataforma Blynk.
     \end{itemize}
+
+
 
 \subsubsection{Gestión de Entrada de Vehículos}
 \begin{enumerate}
@@ -359,6 +376,14 @@ La pantalla LCD muestra en tiempo real el estado de los espacios de parqueo en e
 \end{itemize}
 La información se actualiza dinámicamente cada vez que un sensor detecta un cambio en el estado.
 
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\linewidth]{Imagenes/lcd.jpeg}
+    \caption{Visualización del estado de disponibilidad de los espacios en la pantalla LCD}
+    \label{fig:101}
+\end{figure}
+
 \subsubsection{Control y Monitoreo Remoto con Blynk}
 \begin{itemize}
     \item \textbf{Monitoreo:}  
@@ -367,6 +392,15 @@ La información se actualiza dinámicamente cada vez que un sensor detecta un ca
     \item \textbf{Reserva de espacios:}  
     La aplicación incluye un switch que permite a los usuarios reservar un espacio. Cuando se activa, el sistema marca el espacio como ``reservado'' incluso si está vacío.
 \end{itemize}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=1\linewidth]{Imagenes/blynk.png}
+    \caption{Visualización de espacios disponibles en la plataforma Blynk por conexión WiFi cuando el slot 2 está ocupado}
+    \label{fig:103}
+\end{figure}
+
+
 
 \subsection{Análisis de Resultados}
 Los resultados obtenidos durante la implementación y pruebas del sistema de parqueo inteligente fueron satisfactorios, demostrando la efectividad de la integración entre los componentes de hardware y software. Los sensores infrarrojos presentaron un alto grado de precisión en la detección de vehículos en los espacios de parqueo y en las entradas/salidas, logrando una tasa de acierto sumamente alta. Sin embargo, se observó que en condiciones de iluminación ambiental intensa, la sensibilidad de los sensores disminuyó significativamente, lo que en algunos casos llevó a lecturas incorrectas. Este aspecto resalta la necesidad de considerar tecnologías complementarias para garantizar un desempeño consistente en diversas condiciones.
