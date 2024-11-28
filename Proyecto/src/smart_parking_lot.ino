@@ -6,11 +6,74 @@
 #include <BlynkSimpleEsp32.h>
 #include <Wire.h>
 #include <LiquidCrystal_I2C.h>
+#include <ESP32Servo.h>
 
 LiquidCrystal_I2C lcd(0x27, 16, 2);
 
-char ssid[] = "Sebachoserra";
-char pass[] = "53b@ch04521";
+char ssid[] = "MJ-2.4";
+char pass[] = "Delunoalocho";
+
+Servo myservo1;
+Servo myservo2;
+int servoPin1 = 18;
+int servoPin2 = 19;
+
+// Variables para almacenar el estado de los slots
+bool slot1State = false;
+bool slot2State = false;
+bool slot3State = false;
+
+// Variables para rastrear activación manual
+bool slot1Manual = false;
+bool slot2Manual = false;
+bool slot3Manual = false;
+
+// Función para actualizar la pantalla LCD
+void updateLCD()
+{
+  lcd.setCursor(0, 0);
+  lcd.print("Slot1:");
+  lcd.setCursor(6, 0);
+  lcd.print(slot1State ? "NA" : "A ");
+
+  lcd.setCursor(8, 0);
+  lcd.print("Slot2:");
+  lcd.setCursor(14, 0);
+  lcd.print(slot2State ? "NA" : "A ");
+
+  lcd.setCursor(0, 1);
+  lcd.print("Slot3:");
+  lcd.setCursor(6, 1);
+  lcd.print(slot3State ? "NA" : "A ");
+
+  int totalAvailable = 3 - (slot1State + slot2State + slot3State);
+  lcd.setCursor(9, 1);
+  lcd.print("Total:");
+  lcd.setCursor(15, 1);
+  lcd.print(totalAvailable);
+}
+
+// Manejo de switches en Blynk
+BLYNK_WRITE(V0)
+{
+  slot1Manual = param.asInt(); // Registrar activación manual
+  slot1State = slot1Manual;   // Forzar estado a NA si manualmente se activa
+  updateLCD();
+}
+
+BLYNK_WRITE(V1)
+{
+  slot2Manual = param.asInt();
+  slot2State = slot2Manual;
+  updateLCD();
+}
+
+BLYNK_WRITE(V2)
+{
+  slot3Manual = param.asInt();
+  slot3State = slot3Manual;
+  updateLCD();
+}
 
 void setup()
 {
@@ -24,84 +87,62 @@ void setup()
   pinMode(34, OUTPUT);
   pinMode(35, OUTPUT);
 
+  myservo1.attach(servoPin1);
+  myservo2.attach(servoPin2);
+
   lcd.init();
   lcd.backlight();
 
   Blynk.begin(BLYNK_AUTH_TOKEN, ssid, pass);
+  updateLCD();
 }
 
 void loop()
 {
-  int Slot1 = digitalRead(25);
-  int Slot2 = digitalRead(26);
-  int Slot3 = digitalRead(27);
+  // Leer los sensores de los slots solo si no están en modo manual
+  if (!slot1Manual)
+    slot1State = digitalRead(25) == HIGH;
+
+  if (!slot2Manual)
+    slot2State = digitalRead(26) == HIGH;
+
+  if (!slot3Manual)
+    slot3State = digitalRead(27) == HIGH;
+
+  updateLCD();
 
   int In = digitalRead(32);
   int OUT = digitalRead(33);
 
-  if (Slot1 == 0)
+  if (In == LOW)
   {
-      Serial.println("slot1 available");
-      lcd.setCursor(0, 0);
-      lcd.print("Slot1:");
-      lcd.setCursor(6, 0);
-      lcd.print("A ");
+      myservo1.write(180);
+      delay(1000);
   }
   else
   {
-      Serial.println("slot1 not available");
-      lcd.setCursor(0, 0);
-      lcd.print("Slot1:");
-      lcd.setCursor(6, 0);
-      lcd.print("NA");
+      myservo1.write(90);
+      delay(1000);
   }
 
-  if (Slot2 == 0)
+  if (OUT == LOW)
   {
-      Serial.println("slot2 available");
-      lcd.setCursor(8, 0);
-      lcd.print("Slot2:");
-      lcd.setCursor(14, 0);
-      lcd.print("A ");
+      myservo2.write(0);
+      delay(1000);
   }
   else
   {
-      Serial.println("slot2 not available");
-      lcd.setCursor(8, 0);
-      lcd.print("Slot2:");
-      lcd.setCursor(14, 0);
-      lcd.print("NA");
+      myservo2.write(90);
+      delay(1000);
   }
 
-  if (Slot3 == 0)
-  {
-      Serial.println("slot3 available");
-      lcd.setCursor(0, 1);
-      lcd.print("Slot3:");
-      lcd.setCursor(6, 1);
-      lcd.print("A ");
-  }
-  else
-  {
-      Serial.println("slot3 not available");
-      lcd.setCursor(0, 1);
-      lcd.print("Slot3:");
-      lcd.setCursor(6, 1);
-      lcd.print("NA");
-  }
+  // Enviar datos a Blynk
+  Blynk.virtualWrite(V0, slot1State);
+  Blynk.virtualWrite(V1, slot2State);
+  Blynk.virtualWrite(V2, slot3State);
 
-  int Total = 3 - (Slot1 + Slot2 + Slot3);
-  lcd.setCursor(9, 1);
-  lcd.print("Total:");
-  lcd.setCursor(15, 1);
-  lcd.print(Total);
-  Serial.print("Total Available Slots:");
-  Serial.println(Total);
-  Serial.println("****************************************************");
+  int totalAvailable = 3 - (slot1State + slot2State + slot3State);
+  Blynk.virtualWrite(V3, totalAvailable);
 
-  Blynk.virtualWrite(V0, Slot1);
-  Blynk.virtualWrite(V1, Slot2);
-  Blynk.virtualWrite(V2, Slot3);
-  Blynk.virtualWrite(V3, Total);
   Blynk.run();
 }
