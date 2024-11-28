@@ -45,7 +45,7 @@ char pass[] = "Contraseña";
 ~~~
 3. **Configurar el token de autenticación de Blynk**:
 ~~~
-#define BLYNK_AUTH_TOKEN "TuTokenDeAutenticación"
+#define BLYNK_AUTH_TOKEN "TokenDeAutenticación"
 ~~~
 
 
