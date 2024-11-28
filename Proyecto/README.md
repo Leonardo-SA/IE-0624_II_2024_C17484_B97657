@@ -1,10 +1,15 @@
 # Sistema de Parqueo Inteligente
-## Lorena Solís Extteny | Leonardo Serrano Arias 
+
+## Lorena Solís Extteny | Leonardo Serrano Arias
+
+---
 
 Este proyecto implementa un sistema automatizado de parqueo inteligente utilizando un microcontrolador ESP32, sensores infrarrojos, servomotores, una pantalla LCD y la plataforma Blynk. El sistema permite monitorear, gestionar y reservar espacios de parqueo en tiempo real mediante una aplicación móvil, mejorando la eficiencia y comodidad para los usuarios.
+
 ---
 
 ## Hardware Utilizado
+
 - **ESP32**: Microcontrolador principal para la gestión del sistema.
 - **Sensores infrarrojos (5x)**: Detectan la ocupación de los espacios de parqueo.
 - **Servomotores (2x)**: Controlan las barreras de entrada y salida.
@@ -14,6 +19,7 @@ Este proyecto implementa un sistema automatizado de parqueo inteligente utilizan
 ---
 
 ## Software Utilizado
+
 - **Arduino IDE**: Desarrollo del firmware del ESP32.
 - **Blynk**: Plataforma de IoT para monitoreo y control remoto.
 - **Librerías**:
