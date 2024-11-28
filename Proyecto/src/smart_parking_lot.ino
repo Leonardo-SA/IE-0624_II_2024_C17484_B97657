@@ -116,12 +116,12 @@ void loop()
 
   if (In == LOW)
   {
-      myservo1.write(180);
+      myservo1.write(90);
       delay(1000);
   }
   else
   {
-      myservo1.write(90);
+      myservo1.write(180);
       delay(1000);
   }
 
