@@ -10,8 +10,8 @@
 
 LiquidCrystal_I2C lcd(0x27, 16, 2);
 
-char ssid[] = "MJ-2.4";
-char pass[] = "Delunoalocho";
+char ssid[] = "<Nombre de la red>";
+char pass[] = "<Contraseña de la red>";
 
 Servo myservo1;
 Servo myservo2;
